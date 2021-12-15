@@ -15,7 +15,6 @@ typedef struct s_philo{
     pthread_mutex_t fork;
     pthread_mutex_t next_fork;
     pthread_t   philosopher;
-    struct s_philo	*next;
     
 }               t_philo;
 
