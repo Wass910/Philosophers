@@ -15,7 +15,6 @@ typedef struct s_philo{
     int philo_dead;
     pthread_mutex_t fork;
     pthread_mutex_t next_fork;
-    pthread_mutex_t is_dead;
     pthread_t   philosopher;
     
 }               t_philo;
@@ -33,6 +32,7 @@ typedef struct s_arg{
     int time_each_philo_must_eat;
     t_philo     *philo;
     t_philo     *philo_all;
+    pthread_mutex_t *write;
 }               t_arg;
 
 int ft_atoi(char *str);
