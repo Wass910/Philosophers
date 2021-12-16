@@ -41,13 +41,9 @@ void	is_eat(t_arg *arg)
 	}
 	//pthread_mutex_lock(arg->write);
 	arg->current_time = actual_time();
-	if (((arg->current_time - arg->time) - arg->philo[*arg->current_philo - 1].last_eat) > arg->time_to_die)
-	{
-		arg->philo[*arg->current_philo - 1].philo_dead = 1;
-	}
-	else
-		arg->philo[*arg->current_philo - 1].last_eat = (arg->current_time - arg->time);
+	*arg->lst_eat = (arg->current_time - arg->time);
 	arg->current_time = actual_time();
+	//printf("philo = %d ----lst_eat = %ld---------\n", *arg->current_philo, arg->philo[*arg->current_philo - 1].last_eat);
 	pthread_mutex_lock(arg->write); 
 	printf("%lu, philo %d has taken a fork\n",(arg->current_time - arg->time), *arg->current_philo);
 	printf("%lu, philo %d has taken a fork\n",(arg->current_time - arg->time), *arg->current_philo);
@@ -85,6 +81,7 @@ void	*initialize_all(t_arg *all, t_arg *arg)
 	
 	i = *arg->current_philo;
 	all->current_philo = malloc(sizeof(int));
+	all->lst_eat = malloc(sizeof(unsigned long int));
 	all->nb_philo = arg->nb_philo;
     all->nb_fork = arg->nb_fork;
     *all->current_philo = i;
@@ -97,6 +94,7 @@ void	*initialize_all(t_arg *all, t_arg *arg)
 	if (arg->time == 0)
 		arg->time = actual_time();
 	all->time = arg->time;
+	*all->lst_eat = 0;
 	all->philo = arg->philo;
 	//printf("philo = %d\n", *all->current_philo);
     //all->time_each_philo_must_eat;
@@ -105,14 +103,16 @@ void	*initialize_all(t_arg *all, t_arg *arg)
 void    *is_dead(void *arg)
 {
 	t_arg *all;
+	unsigned long int curr_time;
 
 	all = (t_arg *)arg;
 	while (1)
 	{
-		if (all->philo[*all->current_philo - 1].philo_dead == 1)
+		curr_time = actual_time();
+		if (((curr_time - all->time) - *all->lst_eat) > all->time_to_die)
 		{
 			pthread_mutex_lock(all->write);
-			printf("%lu, philo %d is dead\n", (all->current_time - all->time), *all->current_philo);
+			printf("%lu, philo %d is dead\n", (curr_time - all->time), *all->current_philo);
 			//pthread_mutex_lock(&all->write);
             exit(EXIT_FAILURE);
 		}

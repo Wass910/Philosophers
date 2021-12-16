@@ -25,6 +25,7 @@ typedef struct s_arg{
     int *current_philo;
     int philo_dead;
     int time_to_die;
+    unsigned long int *lst_eat;
     unsigned long int time;
     unsigned long int current_time;
     int time_to_eat;
