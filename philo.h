@@ -13,6 +13,7 @@ typedef struct s_philo{
     int current_philo;
     unsigned long int last_eat;
     int philo_dead;
+    int is_eating;
     pthread_mutex_t fork;
     pthread_mutex_t next_fork;
     pthread_t   philosopher;
@@ -25,15 +26,15 @@ typedef struct s_arg{
     int *current_philo;
     int philo_dead;
     int time_to_die;
-    unsigned long int *lst_eat;
+    unsigned long int   *lst_eat;
     unsigned long int time;
     unsigned long int current_time;
     int time_to_eat;
     int time_to_sleep;
     int time_each_philo_must_eat;
+    pthread_mutex_t *write;
     t_philo     *philo;
     t_philo     *philo_all;
-    pthread_mutex_t *write;
 }               t_arg;
 
 int ft_atoi(char *str);
