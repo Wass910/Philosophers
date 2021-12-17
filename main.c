@@ -130,7 +130,6 @@ void    *routine(void *arg)
 		else
 			pthread_mutex_unlock(&all->philo[*all->current_philo].fork);
 		is_sleep_and_think(all);
-
 	}
 	return NULL;
 }
