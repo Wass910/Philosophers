@@ -76,6 +76,7 @@ void	initialize_all(t_arg *all, t_arg *arg)
    	all->current_time = arg->current_time;
     all->time_to_eat = arg->time_to_eat;
     all->time_to_sleep = arg->time_to_sleep;
+	all->finish = 0;
 	pthread_mutex_lock(arg->time_m);
 	if (*arg->time == 0)
 		*arg->time = actual_time();
@@ -88,4 +89,5 @@ void	initialize_all(t_arg *all, t_arg *arg)
 	all->write = arg->write;
 	all->philo = arg->philo;
 	pthread_mutex_init(&all->eat, NULL);
+	pthread_mutex_init(&all->finish_m, NULL);
 }

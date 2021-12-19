@@ -9,6 +9,7 @@ void    *routine(void *arg)
 	initialize_all(all, (t_arg *)arg);
 	if (pthread_create(&dead, NULL, &is_dead, all) != 0)
        exit(EXIT_FAILURE);
+	pthread_detach(dead);
 	while (1 && all->have_eat != all->time_each_philo_must_eat)
 	{
 		pthread_mutex_lock(&all->philo[*all->current_philo - 1].fork);
@@ -30,6 +31,9 @@ void    *routine(void *arg)
 			pthread_mutex_unlock(&all->philo[*all->current_philo].fork);
 		is_sleep_and_think(all);
 	}
+	pthread_mutex_lock(&all->finish_m);
+	all->finish = 1;
+	pthread_mutex_unlock(&all->finish_m);
 	return NULL;
 }
 
@@ -51,12 +55,14 @@ int loop_philo(t_arg *arg_temp)
 		pthread_mutex_unlock(arg->philo_m);
 		if (pthread_create(&arg->philo[i - 1].philosopher, NULL, &routine, arg) != 0)
             exit(EXIT_FAILURE);
+		//pthread_detach(arg->philo[i - 1].philosopher);
 		ft_usleep(5);
     }
-	i = 1;
-	while (i <= arg_temp->nb_fork)
+	i = 0;
+	printf("---------------------------\n");
+	while (i < arg_temp->nb_fork)
 	{
-		if (pthread_join(arg->philo[i - 1].philosopher, NULL) != 0)
+		if (pthread_join(arg->philo[i].philosopher, NULL) != 0)
         	exit(EXIT_FAILURE);
 		i++;
 	}

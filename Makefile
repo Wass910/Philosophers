@@ -20,7 +20,7 @@ OBJ_DIR = obj
 $(NAME):		$(OBJS)
 				$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L.
 
-$(OBJ_DIR)/%.o: $(SRCS)/%.c
+
 
 all:			$(NAME)
 

@@ -22,6 +22,7 @@ typedef struct s_philo{
 
 typedef struct s_arg{
     int temp;
+    int finish;
     int nb_philo;
     int nb_fork;
     int *current_philo;
@@ -37,6 +38,7 @@ typedef struct s_arg{
     int time_each_philo_must_eat;
     pthread_mutex_t *write;
     pthread_mutex_t eat;
+    pthread_mutex_t finish_m;
     pthread_mutex_t *time_m;
     pthread_mutex_t *philo_m;
     t_philo     *philo;

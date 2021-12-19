@@ -56,6 +56,13 @@ void    *is_dead(void *arg)
             exit(EXIT_FAILURE);
 		}
 		pthread_mutex_unlock(&all->eat);
+		pthread_mutex_lock(&all->finish_m);
+		if (all->finish == 1)
+		{	
+			pthread_mutex_unlock(&all->finish_m);
+			break ;
+		}
+		pthread_mutex_unlock(&all->finish_m);
 	}
 	return NULL;
 }
