@@ -59,7 +59,6 @@ int loop_philo(t_arg *arg_temp)
 		ft_usleep(5);
     }
 	i = 0;
-	printf("---------------------------\n");
 	while (i < arg_temp->nb_fork)
 	{
 		if (pthread_join(arg->philo[i].philosopher, NULL) != 0)
@@ -67,7 +66,6 @@ int loop_philo(t_arg *arg_temp)
 		i++;
 	}
 	printf("Each philo ate %d time(s)\n", arg->time_each_philo_must_eat);
-	// while(1);
     return 1;
 }
 
