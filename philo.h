@@ -25,10 +25,9 @@ typedef struct s_arg{
     int finish;
     int nb_philo;
     int nb_fork;
-    int *current_philo;
-    int philo_dead;
+    int current_philo;
+    int *philo_dead;
     unsigned long int time_to_die;
-    int *is_gone;
     int have_eat;
     unsigned long int   lst_eat;
     unsigned long int   *time;
@@ -39,8 +38,8 @@ typedef struct s_arg{
     pthread_mutex_t *write;
     pthread_mutex_t eat;
     pthread_mutex_t finish_m;
-    pthread_mutex_t *time_m;
-    pthread_mutex_t *philo_m;
+    pthread_mutex_t time_m;
+    pthread_mutex_t philo_m;
     t_philo     *philo;
     t_philo     *philo_all;
 }               t_arg;
