@@ -47,11 +47,13 @@ int init_philo_struct(char **argv, int argc)
 	arg.write = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.time_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.philo_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
+	arg.dead_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.time_to_die = ft_atoi(argv[2]);
 	arg.time_to_eat = ft_atoi(argv[3]);
 	arg.time_to_sleep = ft_atoi(argv[4]);
 	*arg.philo_dead = 0;
 	pthread_mutex_init(arg.write, NULL);
+	pthread_mutex_init(arg.dead_m, NULL);
 	pthread_mutex_init(arg.time_m, NULL);
 	pthread_mutex_init(arg.philo_m, NULL);
 	arg = init_philo(arg);
@@ -90,6 +92,7 @@ void	initialize_all(t_arg *all, t_arg *arg)
 	all->time_each_philo_must_eat = arg->time_each_philo_must_eat;
 	all->write = arg->write;
 	all->philo = arg->philo;
+	all->dead_m = arg->dead_m;
 	pthread_mutex_init(&all->eat, NULL);
 	pthread_mutex_init(&all->finish_m, NULL);
 }

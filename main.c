@@ -8,29 +8,44 @@ void    *routine(void *arg)
 	all = malloc(sizeof(t_arg) * 1);
 	initialize_all(all, (t_arg *)arg);
 	//printf("philo %d is here \n", all->current_philo);
-	if (pthread_create(&dead, NULL, &is_dead, all) != 0)
-       exit(EXIT_FAILURE);
 	if (all->nb_fork == 1)
 	{
 		all->current_time = actual_time();
 		printf("%lu, philo %d has taken a fork\n",(all->current_time - *all->time), *all->current_philo);
-		ft_usleep(all->time_to_die + 10);
+		ft_usleep(all->time_to_die + 1);
+		all->current_time = actual_time();
+		printf("%lu, philo %d is dead\n",(all->current_time - *all->time), *all->current_philo);
+		*all->philo_dead = 1;
+		return NULL ;
 	}
+	if (pthread_create(&dead, NULL, &is_dead, all) != 0)
+       	exit(EXIT_FAILURE);
 	pthread_detach(dead);
-	while (1 && all->have_eat != all->time_each_philo_must_eat && *all->philo_dead != 1)
+	while (1 && all->have_eat != all->time_each_philo_must_eat)
 	{
+		pthread_mutex_lock(all->dead_m);
+		if (*all->philo_dead == 1)
+		{
+			pthread_mutex_unlock(all->dead_m);
+			break ;
+		}
+		pthread_mutex_unlock(all->dead_m);
 		pthread_mutex_lock(&all->philo[*all->current_philo - 1].fork);
 		pthread_mutex_lock(all->write);
 		all->current_time = actual_time();
+		pthread_mutex_lock(all->dead_m);
 		if (*all->philo_dead != 1)
+		{
+			pthread_mutex_unlock(all->dead_m);
 			printf("%lu, philo %d has taken a fork\n",(all->current_time - *all->time), *all->current_philo);
+		}
+		pthread_mutex_unlock(all->dead_m);
 		pthread_mutex_unlock(all->write);
 		if (*all->current_philo == all->nb_fork)
 			pthread_mutex_lock(&all->philo[0].fork);
 		else
 			pthread_mutex_lock(&all->philo[*all->current_philo].fork);
-		if (*all->philo_dead != 1)
-			is_eat(all);
+		is_eat(all);
 		if (all->time_each_philo_must_eat != -1)
 			all->have_eat++;
 		pthread_mutex_unlock(&all->philo[*all->current_philo - 1].fork);
@@ -38,12 +53,13 @@ void    *routine(void *arg)
 			pthread_mutex_unlock(&all->philo[0].fork);
 		else
 			pthread_mutex_unlock(&all->philo[*all->current_philo].fork);
-		if (*all->philo_dead != 1)
-			is_sleep_and_think(all);
+		is_sleep_and_think(all);
+
 	}
 	pthread_mutex_lock(&all->finish_m);
 	all->finish = 1;
 	pthread_mutex_unlock(&all->finish_m);
+	ft_usleep(10);
 	return NULL;
 }
 

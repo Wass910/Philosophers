@@ -37,6 +37,7 @@ typedef struct s_arg{
     int time_to_sleep;
     int time_each_philo_must_eat;
     pthread_mutex_t *write;
+    pthread_mutex_t *dead_m;
     pthread_mutex_t eat;
     pthread_mutex_t finish_m;
     pthread_mutex_t *time_m;

@@ -4,7 +4,7 @@ OBJS			= $(SRCS:.c=.o)
 
 NAME			= philo
 
-CFLAGS			= -Wall -Wextra -Werror -g -pthread 
+CFLAGS			= -Wall -Wextra -Werror -g -fsanitize=thread -pthread
 
 RM				= rm -f
 
