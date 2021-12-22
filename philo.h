@@ -25,7 +25,7 @@ typedef struct s_arg{
     int finish;
     int nb_philo;
     int nb_fork;
-    int current_philo;
+    int *current_philo;
     int *philo_dead;
     unsigned long int time_to_die;
     int *is_gone;

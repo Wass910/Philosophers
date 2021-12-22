@@ -65,14 +65,14 @@ void	initialize_all(t_arg *all, t_arg *arg)
 	int i;
 
 	pthread_mutex_lock(arg->philo_m);
-	i = arg->current_philo;
+	i = *arg->current_philo;
 	pthread_mutex_unlock(arg->philo_m);
 	all->time = malloc(sizeof(unsigned long int));
 	all->lst_eat = malloc(sizeof(unsigned long int));
-	all->is_gone = malloc(sizeof(int));
+	all->current_philo = malloc(sizeof(int));
 	all->nb_philo = arg->nb_philo;
     all->nb_fork = arg->nb_fork;
-    all->current_philo = i;
+    *all->current_philo = i;
     all->philo_dead = arg->philo_dead;
     all->time_to_die = arg->time_to_die;
    	all->current_time = arg->current_time;
