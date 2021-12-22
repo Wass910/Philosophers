@@ -75,7 +75,9 @@ void    *is_dead(void *arg)
 			pthread_mutex_unlock(all->dead_m);
 			pthread_mutex_lock(all->write);
 			printf("%lu, philo %d is dead\n", (curr_time - launch_time), *all->current_philo);
+			pthread_mutex_lock(all->dead_m);
 			*all->philo_dead = 1;
+			pthread_mutex_unlock(all->dead_m);
 			pthread_mutex_unlock(all->write);
 			break ;
 		}
