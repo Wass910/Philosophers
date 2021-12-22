@@ -7,32 +7,22 @@ void    *routine(void *arg)
 
 	all = malloc(sizeof(t_arg) * 1);
 	initialize_all(all, (t_arg *)arg);
+	printf("philo %d is here \n", all->current_philo);
 	if (pthread_create(&dead, NULL, &is_dead, all) != 0)
        exit(EXIT_FAILURE);
 	pthread_detach(dead);
 	while (1 && all->have_eat != all->time_each_philo_must_eat && *all->philo_dead != 1)
 	{
 		pthread_mutex_lock(&all->philo[all->current_philo - 1].fork);
-		if (all->current_philo == all->nb_fork && all->nb_fork > 1)
-			pthread_mutex_lock(&all->philo[0].fork);
-		else
-		{	
-			if (all->nb_fork > 1)
-				pthread_mutex_lock(&all->philo[all->current_philo].fork);
-			else
-			{
-				all->current_time = actual_time();
-				printf("%lu, philo %d has taken a fork\n",(all->current_time - *all->time), all->current_philo);
-				pthread_mutex_unlock(&all->philo[all->current_philo - 1].fork);
-				ft_usleep(all->time_to_die + 50);
-				break ;	
-			}
-		}
-		all->current_time = actual_time();
 		pthread_mutex_lock(all->write);
+		all->current_time = actual_time();
 		if (*all->philo_dead != 1)
 			printf("%lu, philo %d has taken a fork\n",(all->current_time - *all->time), all->current_philo);
 		pthread_mutex_unlock(all->write);
+		if (all->current_philo == all->nb_fork && all->nb_fork > 1)
+			pthread_mutex_lock(&all->philo[0].fork);
+		else
+			pthread_mutex_lock(&all->philo[all->current_philo].fork);
 		if (*all->philo_dead != 1)
 			is_eat(all);
 		if (all->time_each_philo_must_eat != -1)
@@ -68,7 +58,7 @@ int loop_philo(t_arg *arg_temp)
 		pthread_mutex_unlock(arg->philo_m);
 		if (pthread_create(&arg->philo[i - 1].philosopher, NULL, &routine, arg) != 0)
             exit(EXIT_FAILURE);
-		ft_usleep(2);
+		ft_usleep(10);
 		//pthread_detach(arg->philo[i - 1].philosopher);
     }
 	i = 0;

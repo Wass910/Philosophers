@@ -48,20 +48,19 @@ void    *is_dead(void *arg)
 		pthread_mutex_lock(&all->eat);
 		if (((curr_time - launch_time) - *all->lst_eat) > all->time_to_die)
 		{
-			//printf("condition %lu - %lu > %ld = --------------------------------\n",(curr_time - launch_time), *all->lst_eat, all->time_to_die);
+			// printf("condition %lu - %lu > %ld = --------------------------------\n",(curr_time - launch_time), *all->lst_eat, all->time_to_die);
 			// printf("philo number %d last eat = %lu--------------------------------\n", all->current_philo, *all->lst_eat);
 			// printf("philo number %d dead = %lu--------------------------------\n", all->current_philo, (curr_time - launch_time));
 			// printf("condition %lu - %lu > %ld = --------------------------------\n",(curr_time - launch_time), *all->lst_eat, all->time_to_die);
-			pthread_mutex_lock(all->write);
 			if (*all->philo_dead == 1)
 			{	
 				pthread_mutex_unlock(&all->eat);
-				pthread_mutex_unlock(all->write);
 				break ;
 			}
+			pthread_mutex_lock(all->write);
 			printf("%lu, philo %d is dead\n", (curr_time - launch_time), all->current_philo);
-			*all->philo_dead = 1;
 			pthread_mutex_unlock(all->write);
+			*all->philo_dead = 1;
 			pthread_mutex_unlock(&all->eat);
 			break ;
 		}
