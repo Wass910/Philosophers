@@ -23,21 +23,21 @@ typedef struct s_philo{
 typedef struct s_arg{
     int temp;
     int finish;
+    int *finish_eat;
     int nb_philo;
     int nb_fork;
     int *current_philo;
-    int *philo_dead;
+    int philo_dead;
     unsigned long int time_to_die;
     int *is_gone;
     int have_eat;
-    unsigned long int   *lst_eat;
+    unsigned long int   lst_eat;
     unsigned long int   *time;
     unsigned long int current_time;
     int time_to_eat;
     int time_to_sleep;
     int time_each_philo_must_eat;
     pthread_mutex_t *write;
-    pthread_mutex_t *dead_m;
     pthread_mutex_t eat;
     pthread_mutex_t finish_m;
     pthread_mutex_t *time_m;

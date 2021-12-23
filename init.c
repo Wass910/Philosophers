@@ -42,18 +42,16 @@ int init_philo_struct(char **argv, int argc)
 	arg = verif_arg(arg, argc, argv);
 	arg.nb_fork = ft_atoi(argv[1]);
 	arg.time = malloc(sizeof(unsigned long int) * arg.nb_fork);
-	arg.philo_dead = malloc(sizeof(int) * arg.nb_fork);
 	*arg.time = 0;
 	arg.write = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.time_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.philo_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
-	arg.dead_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
+	arg.finish_eat = malloc(sizeof(int) *  arg.nb_fork);
+	*arg.finish_eat = 0;
 	arg.time_to_die = ft_atoi(argv[2]);
 	arg.time_to_eat = ft_atoi(argv[3]);
 	arg.time_to_sleep = ft_atoi(argv[4]);
-	*arg.philo_dead = 0;
 	pthread_mutex_init(arg.write, NULL);
-	pthread_mutex_init(arg.dead_m, NULL);
 	pthread_mutex_init(arg.time_m, NULL);
 	pthread_mutex_init(arg.philo_m, NULL);
 	arg = init_philo(arg);
@@ -64,20 +62,18 @@ int init_philo_struct(char **argv, int argc)
 
 void	initialize_all(t_arg *all, t_arg *arg)
 {
-	int i;
-
-	pthread_mutex_lock(arg->philo_m);
-	i = *arg->current_philo;
+	//int i;
+	//all->current_philo = malloc(sizeof(int));
+	all->current_philo = arg->current_philo;
 	pthread_mutex_unlock(arg->philo_m);
 	all->time = malloc(sizeof(unsigned long int));
-	all->lst_eat = malloc(sizeof(unsigned long int));
-	all->current_philo = malloc(sizeof(int));
+	all->is_gone = malloc(sizeof(int));
 	all->nb_philo = arg->nb_philo;
     all->nb_fork = arg->nb_fork;
-    *all->current_philo = i;
     all->philo_dead = arg->philo_dead;
     all->time_to_die = arg->time_to_die;
    	all->current_time = arg->current_time;
+	all->finish_eat = arg->finish_eat;
     all->time_to_eat = arg->time_to_eat;
     all->time_to_sleep = arg->time_to_sleep;
 	all->finish = 0;
@@ -85,14 +81,13 @@ void	initialize_all(t_arg *all, t_arg *arg)
 	if (*arg->time == 0)
 		*arg->time = actual_time();
 	pthread_mutex_unlock(arg->time_m);
-	*all->lst_eat = 0;
+	all->lst_eat = 0;
 	all->is_gone = arg->is_gone;
 	all->time = arg->time;
 	all->have_eat = 0;
 	all->time_each_philo_must_eat = arg->time_each_philo_must_eat;
 	all->write = arg->write;
 	all->philo = arg->philo;
-	all->dead_m = arg->dead_m;
 	pthread_mutex_init(&all->eat, NULL);
 	pthread_mutex_init(&all->finish_m, NULL);
 }
