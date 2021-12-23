@@ -4,40 +4,46 @@ void    *routine(void *arg)
 {
 	t_arg all;
 	pthread_t dead;
+	int next_philo;
 
 	initialize_all(&all, (t_arg *)arg);
+	if (all.philo_curr == all.nb_fork)
+		next_philo = 0;
+	else
+		next_philo = all.philo_curr;
 	if (pthread_create(&dead, NULL, &is_dead, &all) != 0)
        exit(EXIT_FAILURE);
 	pthread_detach(dead);
-	printf("philo %d is here\n", all.philo_curr);
 	while (1 && all.have_eat != all.time_each_philo_must_eat)
 	{
-		pthread_mutex_lock(&all.philo[all.philo_curr - 1].fork);
-		all.current_time = actual_time();
-		pthread_mutex_lock(all.write);
-		printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
-		pthread_mutex_unlock(all.write);
-		if (all.philo_curr == all.nb_fork)
-			pthread_mutex_lock(&all.philo[0].fork);
+		if ((all.philo_curr) % 2 == 0)
+		{
+			pthread_mutex_lock(&all.philo[all.philo_curr - 1].fork);
+			all.current_time = actual_time();
+			pthread_mutex_lock(all.write);
+			printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
+			pthread_mutex_unlock(all.write);
+			pthread_mutex_lock(&all.philo[next_philo].fork);
+		}
 		else
-			pthread_mutex_lock(&all.philo[all.philo_curr].fork);
+		{
+			all.current_time = actual_time();
+			pthread_mutex_lock(all.write);
+			printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
+			pthread_mutex_unlock(all.write);
+			pthread_mutex_lock(&all.philo[next_philo].fork);
+			pthread_mutex_lock(&all.philo[all.philo_curr - 1].fork);
+		}
 		is_eat(&all);
 		if (all.time_each_philo_must_eat != -1)
 			all.have_eat++;
+		pthread_mutex_unlock(&all.philo[next_philo].fork);
 		pthread_mutex_unlock(&all.philo[all.philo_curr - 1].fork);
-		if (all.philo_curr == all.nb_fork)
-			pthread_mutex_unlock(&all.philo[0].fork);
-		else
-			pthread_mutex_unlock(&all.philo[all.philo_curr].fork);
 		is_sleep_and_think(&all);
-		//printf("--------------philo %d have eat %d times---------------------------\n", all.philo_curr, all.time_each_philo_must_eat);
 	}
-	//printf("-----------------------------------------\n");
 	pthread_mutex_lock(all.philo_m);
-	//pthread_mutex_lock(&all.finish_m);
 	all.finish = 1;
 	*all.finish_eat = *all.finish_eat + 1;
-	//pthread_mutex_unlock(&all.finish_m);
 	if (*all.finish_eat == all.nb_fork)
 		*all.finish_eat = -1;
 	pthread_mutex_unlock(all.philo_m);

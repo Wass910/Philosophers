@@ -2,6 +2,7 @@
 
 void	is_eat(t_arg *arg)
 {
+
 	arg->current_time = actual_time();
 	pthread_mutex_lock(&arg->eat);
 	arg->lst_eat = (arg->current_time - *arg->time);
@@ -54,7 +55,7 @@ void    *is_dead(void *arg)
 			// 	i++;
 			// }
 			*all->philo_dead = 1;
-			pthread_mutex_unlock(all->write);
+			//pthread_mutex_unlock(all->write);
             exit(EXIT_FAILURE);
 		}
 		pthread_mutex_unlock(&all->eat);
