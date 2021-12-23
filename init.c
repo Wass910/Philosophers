@@ -47,7 +47,11 @@ int init_philo_struct(char **argv, int argc)
 	arg.time_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.philo_m = malloc(sizeof(pthread_mutex_t) *  arg.nb_fork);
 	arg.finish_eat = malloc(sizeof(int) *  arg.nb_fork);
+	arg.current_philo = malloc(sizeof(int) *  arg.nb_fork);
+	arg.philo_dead = malloc(sizeof(int) *  arg.nb_fork);
 	*arg.finish_eat = 0;
+	*arg.current_philo = 1;
+	*arg.philo_dead = 0;
 	arg.time_to_die = ft_atoi(argv[2]);
 	arg.time_to_eat = ft_atoi(argv[3]);
 	arg.time_to_sleep = ft_atoi(argv[4]);
@@ -56,15 +60,15 @@ int init_philo_struct(char **argv, int argc)
 	pthread_mutex_init(arg.philo_m, NULL);
 	arg = init_philo(arg);
 	loop_philo(&arg);
-	free(arg.philo);
+	//free(arg.philo);
 	return 1;
 }
 
 void	initialize_all(t_arg *all, t_arg *arg)
 {
-	//int i;
-	//all->current_philo = malloc(sizeof(int));
-	all->current_philo = arg->current_philo;
+	pthread_mutex_lock(arg->philo_m);
+	all->philo_curr = *arg->current_philo;
+	*arg->current_philo = *arg->current_philo + 1;
 	pthread_mutex_unlock(arg->philo_m);
 	all->time = malloc(sizeof(unsigned long int));
 	all->is_gone = malloc(sizeof(int));
@@ -88,6 +92,7 @@ void	initialize_all(t_arg *all, t_arg *arg)
 	all->time_each_philo_must_eat = arg->time_each_philo_must_eat;
 	all->write = arg->write;
 	all->philo = arg->philo;
+	all->philo_m = arg->philo_m;
 	pthread_mutex_init(&all->eat, NULL);
 	pthread_mutex_init(&all->finish_m, NULL);
 }
