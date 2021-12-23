@@ -38,9 +38,9 @@ void    *routine(void *arg)
 	all.finish = 1;
 	*all.finish_eat = *all.finish_eat + 1;
 	//pthread_mutex_unlock(&all.finish_m);
+	if (*all.finish_eat == all.nb_fork)
+		*all.finish_eat = -1;
 	pthread_mutex_unlock(all.philo_m);
-	while (*all.finish_eat != all.nb_fork - 1);
-	*all.finish_eat = -1;
 	ft_usleep(20);
 	return NULL;
 }
