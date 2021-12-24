@@ -58,5 +58,8 @@ t_arg   init_philo(t_arg arg);
 int init_philo_struct(char **argv, int argc);
 void	initialize_all(t_arg *all, t_arg *arg);
 int loop_philo(t_arg *arg_temp);
+int	init_next_philo(t_arg all);
+t_arg	init_finish(t_arg all);
+int	one_philo(t_arg all);
 
 #endif

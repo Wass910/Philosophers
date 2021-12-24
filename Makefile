@@ -1,10 +1,10 @@
-SRCS		= ft_atoi.c action.c init.c main.c time.c \
+SRCS		= utils.c action.c init.c init_utils.c main.c time.c \
 
 OBJS			= $(SRCS:.c=.o)
 
 NAME			= philo
 
-CFLAGS			= -Wall -Wextra -Werror -g -pthread 
+CFLAGS			= -Wall -Wextra -Werror -g -pthread -fsanitize=thread
 
 RM				= rm -f
 
