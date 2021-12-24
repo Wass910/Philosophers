@@ -43,7 +43,7 @@ void    *is_dead(void *arg)
 	launch_time = *all->time;
 	while (1)
 	{
-		usleep(1);
+		usleep(10);
 		curr_time = actual_time();
 		//printf("curr time = %lu----- lst_eat = %lu ------ philo %d\n", (curr_time - all->time), *all->lst_eat, all->philo_curr);
 		pthread_mutex_lock(&all->eat);
@@ -51,15 +51,16 @@ void    *is_dead(void *arg)
 		{
 			if (((curr_time - launch_time) - all->lst_eat) > all->time_to_die)
 			{
+			pthread_mutex_lock(all->write);
 				if (*all->philo_dead == 1)
 				{	
+					pthread_mutex_unlock(all->write);
 					pthread_mutex_unlock(&all->eat);
 					break ;
 				}
-			pthread_mutex_lock(all->write);
 			printf("%lu, philo %d is dead\n", (curr_time - launch_time), all->philo_curr);
-			pthread_mutex_unlock(all->write);
 			*all->philo_dead = 1;
+			pthread_mutex_unlock(all->write);
 			pthread_mutex_unlock(&all->eat);
 			break ;
 		}

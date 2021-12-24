@@ -13,26 +13,34 @@ void    *routine(void *arg)
 		next_philo = all.philo_curr;
 	if (all.nb_fork == 1)
 	{
+		*all.philo_dead = 1;
 		all.current_time = actual_time();
 		printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
 		ft_usleep(all.time_to_die + 1);
 		all.current_time = actual_time();
 		printf("%lu, philo %d is dead\n", (all.current_time - *all.time), all.philo_curr);
-		free(all.time);
-		free(all.philo);
-		free(all.write);
-		free(all.time_m);
-		free(all.philo_m);
-		free(all.philo_dead);
-		free(all.current_philo);
-		free(all.finish_eat);
-		exit(EXIT_FAILURE);
+		// free(all.time);
+		// free(all.philo);
+		// free(all.write);
+		// free(all.time_m);
+		// free(all.philo_m);
+		// free(all.philo_dead);
+		// free(all.current_philo);
+		// free(all.finish_eat);
+		return NULL ;
 	}
 	if (pthread_create(&dead, NULL, &is_dead, &all) != 0)
        exit(EXIT_FAILURE);
 	pthread_detach(dead);
-	while (1 && all.have_eat != all.time_each_philo_must_eat && *all.philo_dead != 1)
+	while (1 && all.have_eat != all.time_each_philo_must_eat)
 	{
+		pthread_mutex_lock(all.write);
+		if (*all.philo_dead == 1)
+		{
+			pthread_mutex_unlock(all.write);
+			break ;
+		}
+		pthread_mutex_unlock(all.write);
 		if ((all.philo_curr) % 2 == 0)
 		{
 			pthread_mutex_lock(&all.philo[all.philo_curr - 1].fork);
@@ -79,29 +87,30 @@ void    *routine(void *arg)
 int loop_philo(t_arg *arg_temp)
 {   
     int i;
-	t_arg arg;
+	//t_arg arg;
 	//pthread_t philo;
 	
     i = 0;
     while (i < arg_temp->nb_fork)
     {
-		arg = *arg_temp;
+		//arg = *arg_temp;
 		i++;
-		if (pthread_create(&arg.philo[i - 1].philosopher, NULL, &routine, &arg) != 0)
+		if (pthread_create(&arg_temp->philo[i - 1].philosopher, NULL, &routine, arg_temp) != 0)
             exit(EXIT_FAILURE);
 		//pthread_detach(philo);
-		ft_usleep(2);
+		ft_usleep(3);
 
     }
 	i = 0;
 	while (i < arg_temp->nb_fork)
 	{
-		if (pthread_join(arg.philo[i].philosopher, NULL) != 0)
+		if (pthread_join(arg_temp->philo[i].philosopher, NULL) != 0)
         	exit(EXIT_FAILURE);
 		i++;
 	}
-	if (*arg.philo_dead != 1)
-	printf("Each philo ate %d time(s)\n", arg.time_each_philo_must_eat);
+	if (*arg_temp->philo_dead != 1)
+		printf("Each philo ate %d time(s)\n", arg_temp->time_each_philo_must_eat);
+	ft_usleep(40);
     return 1;
 }
 

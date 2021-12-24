@@ -62,6 +62,7 @@ int init_philo_struct(char **argv, int argc)
 	free(arg.philo);
 	free(arg.write);
 	free(arg.time_m);
+	//pthread_mutex_lock(arg.philo_m);
 	free(arg.philo_m);
 	free(arg.time);
 	free(arg.philo_dead);
