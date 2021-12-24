@@ -30,7 +30,7 @@ void 	is_sleep_and_think(t_arg *all)
 void    *is_dead(void *arg)
 {
 	t_arg *all;
-	//int i = 0;
+	// int i = 0;
 	unsigned long int curr_time;
 	unsigned long int launch_time;
 
@@ -51,10 +51,19 @@ void    *is_dead(void *arg)
 			// pthread_mutex_destroy(all->write);
 			// while (i < all->nb_fork)
 			// {
-			// 	pthread_mutex_destroy(&all->philo[i].fork);
+			// 		pthread_mutex_destroy(&all->philo[i].fork);
 			// 	i++;
 			// }
 			*all->philo_dead = 1;
+			free(all->time);
+			free(all->philo);
+			free(all->write);
+			free(all->time_m);
+			free(all->philo_m);
+			free(all->philo_dead);
+			free(all->current_philo);
+			free(all->finish_eat);
+			pthread_mutex_unlock(&all->eat);
 			//pthread_mutex_unlock(all->write);
             exit(EXIT_FAILURE);
 		}
