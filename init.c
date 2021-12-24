@@ -6,7 +6,7 @@
 /*   By: idhiba <idhiba@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 16:46:45 by idhiba            #+#    #+#             */
-/*   Updated: 2021/12/24 19:42:35 by idhiba           ###   ########.fr       */
+/*   Updated: 2021/12/24 20:21:26 by idhiba           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,6 @@ t_arg	init_philo(t_arg arg)
 	arg.philo = malloc(sizeof(t_philo) * (arg.nb_fork));
 	while (i <= arg.nb_fork)
 	{
-		arg.philo[i - 1].mutex_open = 0;
-		arg.philo[i - 1].current_philo = i - 1;
-		arg.philo[i - 1].philo_dead = 0;
-		arg.philo[i - 1].last_eat = 0;
-		arg.philo[i - 1].eat = 0;
 		pthread_mutex_init(&arg.philo[i - 1].fork, NULL);
 		i++;
 	}
