@@ -31,7 +31,7 @@ void    *routine(void *arg)
 	if (pthread_create(&dead, NULL, &is_dead, &all) != 0)
        exit(EXIT_FAILURE);
 	pthread_detach(dead);
-	while (1 && all.have_eat != all.time_each_philo_must_eat)
+	while (1 && all.have_eat != all.time_each_philo_must_eat && *all.philo_dead != 1)
 	{
 		if ((all.philo_curr) % 2 == 0)
 		{
@@ -39,7 +39,8 @@ void    *routine(void *arg)
 			//all.philo[all.philo_curr - 1].mutex_open = 1;
 			all.current_time = actual_time();
 			pthread_mutex_lock(all.write);
-			printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
+			if (*all.philo_dead != 1)
+				printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
 			pthread_mutex_unlock(all.write);
 			pthread_mutex_lock(&all.philo[next_philo].fork);
 			//all.philo[next_philo].mutex_open = 1;
@@ -48,7 +49,8 @@ void    *routine(void *arg)
 		{
 			all.current_time = actual_time();
 			pthread_mutex_lock(all.write);
-			printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
+			if (*all.philo_dead != 1)
+				printf("%lu, philo %d has taken a fork\n",(all.current_time - *all.time), all.philo_curr);
 			pthread_mutex_unlock(all.write);
 			pthread_mutex_lock(&all.philo[next_philo].fork);
 			//all.philo[next_philo].mutex_open = 1;
@@ -78,31 +80,27 @@ int loop_philo(t_arg *arg_temp)
 {   
     int i;
 	t_arg arg;
-	pthread_t philo;
+	//pthread_t philo;
 	
     i = 0;
     while (i < arg_temp->nb_fork)
     {
 		arg = *arg_temp;
 		i++;
-		if (pthread_create(&philo, NULL, &routine, &arg) != 0)
+		if (pthread_create(&arg.philo[i - 1].philosopher, NULL, &routine, &arg) != 0)
             exit(EXIT_FAILURE);
-		pthread_detach(philo);
+		//pthread_detach(philo);
 		ft_usleep(2);
 
     }
 	i = 0;
-	while (1)
+	while (i < arg_temp->nb_fork)
 	{
-		pthread_mutex_lock(arg.philo_m);
-		if (*arg.finish_eat == -1)
-		{
-			pthread_mutex_unlock(arg.philo_m);
-			break ;
-		}
-		pthread_mutex_unlock(arg.philo_m);
-		ft_usleep(30);
+		if (pthread_join(arg.philo[i].philosopher, NULL) != 0)
+        	exit(EXIT_FAILURE);
+		i++;
 	}
+	if (*arg.philo_dead != 1)
 	printf("Each philo ate %d time(s)\n", arg.time_each_philo_must_eat);
     return 1;
 }
