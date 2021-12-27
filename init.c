@@ -6,7 +6,7 @@
 /*   By: idhiba <idhiba@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/24 16:46:45 by idhiba            #+#    #+#             */
-/*   Updated: 2021/12/24 20:21:26 by idhiba           ###   ########.fr       */
+/*   Updated: 2021/12/27 10:57:01 by idhiba           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,27 @@ t_arg	init_philo_struct2(t_arg arg, char **argv)
 
 void	free_arg(t_arg arg)
 {
+	int	i;
+
+	i = 0;
+	ft_usleep(arg.time_to_die + 15);
+	pthread_mutex_destroy(arg.time_m);
+	while (i < arg.nb_fork)
+	{
+		pthread_mutex_destroy(&arg.philo[i].fork);
+		i++;
+	}
 	free(arg.philo);
-	free(arg.write);
 	free(arg.time_m);
 	free(arg.time);
 	free(arg.philo_dead);
 	free(arg.current_philo);
 	free(arg.finish_eat);
+	free(arg.write);
 	pthread_mutex_lock(arg.philo_m);
 	usleep(100);
 	pthread_mutex_unlock(arg.philo_m);
+	pthread_mutex_destroy(arg.philo_m);
 	free(arg.philo_m);
 }
 
